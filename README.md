@@ -9,12 +9,16 @@ mkt 0.1.0
 A tool to make a temporary note
 
 USAGE:
-    mkt [FLAGS] [prefix]
+    mkt [FLAGS] [OPTIONS] [prefix]
 
 FLAGS:
-    -e, --edit       Opens editor to edit note
     -h, --help       Prints help information
+    -o, --open       Opens editor to edit note
     -V, --version    Prints version information
+
+OPTIONS:
+    -e, --editor <editor>          Editor to edit temporary note [default: vim]
+    -x, --extension <extension>    Extension of temporary note [default: md]
 
 ARGS:
     <prefix>    Prefix of temporary note
@@ -30,7 +34,7 @@ $ ls
 ```
 ### make and edit note
 ```bash
-$ mkt -e
+$ mkt -o
 [launch editor...]
 ```
 
