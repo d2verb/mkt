@@ -1,0 +1,38 @@
+# mkt - MaKe a Temporary note
+A tool to make a temporary note
+
+## Usage
+### help
+```bash
+$ mkt --help
+mkt 0.1.0
+A tool to make a temporary note
+
+USAGE:
+    mkt [FLAGS] [prefix]
+
+FLAGS:
+    -e, --edit       Opens editor to edit note
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <prefix>    Prefix of temporary note
+```
+### make note
+```bash
+$ mkt
+$ ls
+2020_11_14_19_13_45_y7vAA0a7.md
+$ mkt mtg # you can also pass the prefix of the generated file
+$ ls
+2020_11_14_19_13_45_y7vAA0a7.md  mtg_2020_11_14_19_16_16_y0Pdor7A.md
+```
+### make and edit note
+```bash
+$ mkt -e
+[launch editor...]
+```
+
+## LICENSE
+MIT
