@@ -69,6 +69,7 @@ fn build_filename(prefix: Option<&str>, extension: &str) -> Result<String> {
 mod tests {
     use super::build_filename;
     use super::generage_random_chars;
+    use super::ErrorKind;
 
     #[test]
     fn test_generated_random_chars_have_correct_length() {
@@ -88,6 +89,25 @@ mod tests {
                 }
                 Err(_) => assert!(false),
             }
+        }
+    }
+
+    #[test]
+    fn test_prefix_and_extension_cannot_be_empty_string() {
+        let cases = vec![("", "txt"), ("prefix", "")];
+        for (prefix, extension) in &cases {
+            match build_filename(Some(prefix), extension) {
+                Ok(_) => assert!(false),
+                Err(err) => assert_eq!(err.kind, ErrorKind::InvalidArgument),
+            }
+        }
+    }
+
+    #[test]
+    fn test_prefix_can_be_none() {
+        match build_filename(None, "md") {
+            Ok(_) => assert!(true),
+            Err(_) => assert!(false),
         }
     }
 }

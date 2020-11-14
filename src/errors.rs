@@ -3,7 +3,7 @@ use std::result;
 
 pub type Result<T> = result::Result<T, Error>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ErrorKind {
     InvalidArgument,
     FileCreationFailed,
@@ -24,8 +24,8 @@ impl ErrorKind {
 
 #[derive(Debug)]
 pub struct Error {
-    kind: ErrorKind,
-    message: Option<String>,
+    pub kind: ErrorKind,
+    pub message: Option<String>,
 }
 
 impl Error {
