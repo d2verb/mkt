@@ -8,7 +8,10 @@ use std::fs::File;
 use std::process::{Command, Stdio};
 
 pub fn run(matches: ArgMatches) -> Result<()> {
-    let filename = match build_filename(matches.value_of("prefix"), "md") {
+    let filename = match build_filename(
+        matches.value_of("prefix"),
+        matches.value_of("extension").unwrap(),
+    ) {
         Ok(filename) => filename,
         Err(err) => return Err(err),
     };
@@ -24,7 +27,7 @@ pub fn run(matches: ArgMatches) -> Result<()> {
     }
 
     if matches.is_present("edit") {
-        Command::new("vim")
+        Command::new(matches.value_of("editor").unwrap())
             .arg(&filename)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
