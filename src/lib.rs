@@ -15,7 +15,7 @@ pub fn run(matches: ArgMatches) -> Result<()> {
 
     File::create(&filename).map_err(|_| Error::FileCreationFailed(filename.clone()))?;
 
-    if matches.is_present("edit") {
+    if matches.is_present("open") {
         Command::new(matches.value_of("editor").unwrap())
             .arg(&filename)
             .stdin(Stdio::inherit())
