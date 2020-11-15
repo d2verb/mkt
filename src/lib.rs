@@ -10,18 +10,24 @@ use std::process::{Command, Stdio};
 pub fn run(matches: ArgMatches) -> Result<()> {
     let filename = build_filename(
         matches.value_of("prefix"),
-        matches.value_of("extension").unwrap(),
+        matches
+            .value_of("extension")
+            .ok_or(Error::OptionParsingFailed("extension".to_string()))?,
     )?;
 
     File::create(&filename).map_err(|_| Error::FileCreationFailed(filename.clone()))?;
 
     if matches.is_present("open") {
-        Command::new(matches.value_of("editor").unwrap())
-            .arg(&filename)
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .output()
-            .expect("failed to edit file");
+        Command::new(
+            matches
+                .value_of("editor")
+                .ok_or(Error::OptionParsingFailed("extension".to_string()))?,
+        )
+        .arg(&filename)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .output()
+        .expect("failed to edit file");
     }
 
     Ok(())

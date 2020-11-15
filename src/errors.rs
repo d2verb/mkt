@@ -7,6 +7,7 @@ pub type Result<T> = result::Result<T, Error>;
 pub enum Error {
     EmptyStringArgument(String),
     FileCreationFailed(String),
+    OptionParsingFailed(String),
 }
 
 impl Error {
@@ -14,6 +15,7 @@ impl Error {
         match self {
             Error::EmptyStringArgument(argument) => format!("empty string: {}", argument),
             Error::FileCreationFailed(filename) => format!("file creation failed: {}", filename),
+            Error::OptionParsingFailed(option) => format!("option parsing failed: {}", option),
         }
     }
 }
