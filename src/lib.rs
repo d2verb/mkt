@@ -2,29 +2,18 @@ pub mod errors;
 
 use chrono::Local;
 use clap::ArgMatches;
-use errors::{Error, ErrorKind, Result};
+use errors::{Error, Result};
 use rand::{distributions::Alphanumeric, Rng};
 use std::fs::File;
 use std::process::{Command, Stdio};
 
 pub fn run(matches: ArgMatches) -> Result<()> {
-    let filename = match build_filename(
+    let filename = build_filename(
         matches.value_of("prefix"),
         matches.value_of("extension").unwrap(),
-    ) {
-        Ok(filename) => filename,
-        Err(err) => return Err(err),
-    };
+    )?;
 
-    match File::create(&filename) {
-        Ok(_) => {}
-        Err(err) => {
-            return Err(Error::new(
-                ErrorKind::FileCreationFailed,
-                Some(format!("{}", err).as_str()),
-            ))
-        }
-    }
+    File::create(&filename).map_err(|_| Error::FileCreationFailed(filename.clone()))?;
 
     if matches.is_present("edit") {
         Command::new(matches.value_of("editor").unwrap())
@@ -50,18 +39,12 @@ fn build_filename(prefix: Option<&str>, extension: &str) -> Result<String> {
     let rand_chars = generage_random_chars(8);
 
     if extension.len() == 0 {
-        return Err(Error::new(
-            ErrorKind::InvalidArgument,
-            Some("extension is empty string"),
-        ));
+        return Err(Error::EmptyStringArgument("extension".to_string()));
     }
 
     match prefix {
         Some(prefix) if prefix.len() == 0 => {
-            return Err(Error::new(
-                ErrorKind::InvalidArgument,
-                Some("prefix is empty string"),
-            ));
+            return Err(Error::EmptyStringArgument("prefix".to_string()));
         }
         Some(prefix) => Ok(format!("{}_{}_{}.{}", prefix, now, rand_chars, extension)),
         None => Ok(format!("{}_{}.{}", now, rand_chars, extension)),
@@ -72,7 +55,7 @@ fn build_filename(prefix: Option<&str>, extension: &str) -> Result<String> {
 mod tests {
     use super::build_filename;
     use super::generage_random_chars;
-    use super::ErrorKind;
+    use super::Error;
 
     #[test]
     fn test_generated_random_chars_have_correct_length() {
@@ -101,7 +84,8 @@ mod tests {
         for (prefix, extension) in &cases {
             match build_filename(Some(prefix), extension) {
                 Ok(_) => assert!(false),
-                Err(err) => assert_eq!(err.kind, ErrorKind::InvalidArgument),
+                Err(Error::EmptyStringArgument(_)) => assert!(true),
+                Err(_) => assert!(false),
             }
         }
     }
