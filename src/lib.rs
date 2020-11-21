@@ -1,33 +1,25 @@
 pub mod errors;
+pub mod options;
 
 use chrono::Local;
-use clap::ArgMatches;
 use errors::{Error, Result};
+use options::Options;
 use rand::{distributions::Alphanumeric, Rng};
 use std::fs::File;
 use std::process::{Command, Stdio};
 
-pub fn run(matches: ArgMatches) -> Result<()> {
-    let filename = build_filename(
-        matches.value_of("prefix"),
-        matches
-            .value_of("extension")
-            .ok_or(Error::OptionParsingFailed("extension".to_string()))?,
-    )?;
+pub fn execute(options: Options) -> Result<()> {
+    let filename = build_filename(options.prefix, options.extension)?;
 
     File::create(&filename).map_err(|_| Error::FileCreationFailed(filename.clone()))?;
 
-    if matches.is_present("open") {
-        Command::new(
-            matches
-                .value_of("editor")
-                .ok_or(Error::OptionParsingFailed("extension".to_string()))?,
-        )
-        .arg(&filename)
-        .stdin(Stdio::inherit())
-        .stdout(Stdio::inherit())
-        .output()
-        .expect("failed to edit file");
+    if options.open {
+        Command::new(options.editor)
+            .arg(&filename)
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .output()
+            .expect("failed to edit file");
     }
 
     Ok(())
@@ -40,7 +32,7 @@ fn generage_random_chars(nchars: usize) -> String {
         .collect::<String>()
 }
 
-fn build_filename(prefix: Option<&str>, extension: &str) -> Result<String> {
+fn build_filename(prefix: Option<String>, extension: String) -> Result<String> {
     let now = Local::now().format("%Y_%m_%d_%H_%M_%S").to_string();
     let rand_chars = generage_random_chars(8);
 
@@ -74,7 +66,7 @@ mod tests {
     fn test_built_filname_has_correct_prefix_and_extension() {
         let cases = vec![("prefix1", "txt"), ("prefix2", "md")];
         for (prefix, extension) in &cases {
-            match build_filename(Some(prefix), extension) {
+            match build_filename(Some(prefix.to_string()), extension.to_string()) {
                 Ok(filename) => {
                     assert!(filename.starts_with(prefix));
                     assert!(filename.ends_with(extension));
@@ -88,7 +80,7 @@ mod tests {
     fn test_prefix_and_extension_cannot_be_empty_string() {
         let cases = vec![("", "txt"), ("prefix", "")];
         for (prefix, extension) in &cases {
-            match build_filename(Some(prefix), extension) {
+            match build_filename(Some(prefix.to_string()), extension.to_string()) {
                 Ok(_) => assert!(false),
                 Err(Error::EmptyStringArgument(_)) => assert!(true),
                 Err(_) => assert!(false),
@@ -98,7 +90,7 @@ mod tests {
 
     #[test]
     fn test_prefix_can_be_none() {
-        match build_filename(None, "md") {
+        match build_filename(None, "md".to_string()) {
             Ok(_) => assert!(true),
             Err(_) => assert!(false),
         }

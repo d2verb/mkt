@@ -17,13 +17,17 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-    -e, --editor <editor>          Editor to edit temporary note [default: vim]
-    -x, --extension <extension>    Extension of temporary note [default: md]
+    -e, --editor <editor>          Editor to edit temporary note
+    -x, --extension <extension>    Extension of temporary note
 
 ARGS:
     <prefix>    Prefix of temporary note
 ```
-### make note
+
+Note that the default value of `editor` is `vim` and the default value of `extension` is `md`.
+
+### Example
+#### 1. make note
 ```bash
 $ mkt
 $ ls
@@ -32,10 +36,19 @@ $ mkt mtg # you can also pass the prefix of the generated file
 $ ls
 2020_11_14_19_13_45_y7vAA0a7.md  mtg_2020_11_14_19_16_16_y0Pdor7A.md
 ```
-### make and edit note
+
+#### 2. make and edit note
 ```bash
 $ mkt -o
 [launch editor...]
+```
+
+## Configuration
+If `$HOME/.mktrc` exists, mkt use it as a config file. The config file must consist of multiple lines like `key = value`.
+```bash
+$ cat ~/.mktrc
+extension = "txt"
+prefix = "mtg"
 ```
 
 ## LICENSE
