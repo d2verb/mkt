@@ -1,4 +1,7 @@
 # mkt - MaKe a Temporary note
+[![CI](https://github.com/d2verb/mkt/workflows/test/badge.svg)](https://github.com/d2verb/mkt/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/d2verb/mkt/blob/master/LICENSE)
+
 A tool to make a temporary note
 
 ## Usage
