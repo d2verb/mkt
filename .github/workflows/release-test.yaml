@@ -1,9 +1,9 @@
 name: test
 
 on:
-  on:
   release:
     types: [released]
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
