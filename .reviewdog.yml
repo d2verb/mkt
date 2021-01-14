@@ -1,0 +1,4 @@
+runner:
+  clippy:
+    cmd: cargo clippy -q --message-format=short
+    name: clippy
